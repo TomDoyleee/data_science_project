@@ -14,7 +14,7 @@ Python modules include:
 ## Requirements 
 * Python 3.8.x
 * Genepy score matrix
-* Disease Phenotype table (PatientID and Diagnosis)
+* Disease phenotype table (PatientID and Diagnosis)
 * _Optional:_ LOEUF score (.xlsx) from gnomAD. [Paper](https://www.nature.com/articles/s41586-020-2308-7#data-availability)
 > For Python dependancies see `requirements.txt`
 
