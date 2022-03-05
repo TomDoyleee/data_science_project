@@ -1,0 +1,6 @@
+## requirements used
+pandas == 1.3.4
+numpy == 1.21.2
+openpyxl == 3.0.9
+scikit-learn == 1.0.1
+requests = 2.26.0
