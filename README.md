@@ -1,6 +1,6 @@
 # data_science_project
 
-Repository for data science research project, involving downstream analysis of [Genepy](https://github.com/UoS-HGIG/GenePy-1.4) scores for patients with Inflammatory Bowel Disease (IBD). (https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2877-3)
+Repository for data science research project, involving downstream analysis of Genepy scores for patients with Inflammatory Bowel Disease (IBD). Genepy [GitHub](https://github.com/UoS-HGIG/GenePy-1.4) [Paper](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2877-3)
 
 Currently using network analysis and protein-protein interaction data to investigate and try to identify sub-networks or funtional modules that are indicative of mechanism.
 
@@ -15,7 +15,7 @@ Python modules include:
 * Python 3.8.x
 * Genepy score matrix
 * Disease Phenotype table (PatientID and Diagnosis)
-* _Optional:_ LOEUF score (.xlsx) from gnomAD (https://www.nature.com/articles/s41586-020-2308-7#data-availability)
+* _Optional:_ LOEUF score (.xlsx) from gnomAD [Paper](https://www.nature.com/articles/s41586-020-2308-7#data-availability)
 > For Python dependancies see `requirements.txt`
 
 
