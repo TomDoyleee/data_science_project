@@ -2,7 +2,7 @@
 
 Repository for data science research project, involving downstream analysis of Genepy scores for patients with Inflammatory Bowel Disease (IBD). Genepy [GitHub](https://github.com/UoS-HGIG/GenePy-1.4) and [Paper](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2877-3).
 
-Currently using network analysis and protein-protein interaction data to investigate and try to identify sub-networks or funtional modules that are indicative of mechanism.
+Currently using network analysis and protein-protein interaction data to investigate and try to identify sub-networks or functional modules that are indicative of mechanism.
 
 Further modules and analysis will be updated in the coming months, including Cytoscape modules.
 
