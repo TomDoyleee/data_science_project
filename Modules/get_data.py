@@ -17,32 +17,40 @@ patient_phenotype_file = '../Data/tab_delim_phenotype.txt'
 
 
 # import genepy matix as df. 'Sampleid' is column name for the sample ids set to be row index.
-genepy_df = pd.read_table(genepy_matrix_file,
-                          index_col = 'Sampleid')
+genepy_df = pd.read_table(genepy_matrix_file, index_col = 'Sampleid')
     
 # normalise genepy across genes using Min max scale, every value to be between 0 and 1.
 def norm_genepy():
     '''
-    Function to normalise across genes for each patient
+    Function to normalise down genes 
     '''
-    genepy_normalized_hold = pd.DataFrame()
-    
-    for i in range(len(genepy_df.index)):
-        row = preprocessing.minmax_scale(genepy_df.iloc[i,])
-        row_series = pd.Series(row, 
-                               index = genepy_df.columns)
-        # adds each line to the data frame 
-        genepy_normalized_hold = genepy_normalized_hold.append(row_series, 
-                                                               ignore_index=True)
-    #adds index values (patientID) back
-    genepy_normalized_hold.index = genepy_df.index
-    
-    return genepy_normalized_hold
+    return genepy_df.apply(preprocessing.minmax_scale, 0)
     
 genepy_normalized = norm_genepy()
 
+# binerise series (required for binerise_genepy)
+def binerise_series(X, percent=95):
+    '''
+    Function to binerise series.
+    '''
+    arr1 = []
+    percentile = np.percentile(X,percent)
+    for row in X:
+        if row > percentile:
+            arr1.append(1)
+        else:
+            arr1.append(0)
+    return arr1
 
+# binerise scores 
+def binerise_genepy(percent=95):
+    '''
+    Function to binerise genepy scores.
+    '''
+    return genepy_df.apply(binerise_series,0, percent=percent)
 
+genepy_bin_95 = binerise_genepy()
+    
 
 # read LOEUF scores into df
 LOEUF_df = pd.read_excel(loeuf_excel_file, 
@@ -56,14 +64,32 @@ LOEUF_dict = LOEUF_series.to_dict()
 
 
 # removes 'nan' values
-LOEUF_dict = {k:v if not np.isnan(v) else 1 for k,v in
-              LOEUF_dict.items() }
+#LOEUF_dict = {k:v if not np.isnan(v) else 1 for k,v in
+#              LOEUF_dict.items() }
 
+def loeuf_score(df):
+    list_LOEUF_scores = []
+    # check that gene name in df is in the LOEUF dict
+    for i in genepy_df.columns:
+        if i in LOEUF_dict:
+            # if it is, append the dictionary value
+            list_LOEUF_scores.append(LOEUF_dict[i])
+        else:
+            # if not, append NaN
+            list_LOEUF_scores.append(np.nan)
+            
+    # change list back into series with df.column names     
+    LOEUF_score_series = pd.Series(list_LOEUF_scores, index = df.columns)
+    # Fill any NaN values so that it can be devided 
+    filled_series = LOEUF_score_series.fillna(1)
+    return filled_series
+
+'''
 # gets a list of loeuf scores for genepy matrix
 def get_loeuf_score(df_for_loeuf):
-    '''
-    function to get loeuf scores for df containing gene names as column headings
-    '''
+'''
+    # function to get loeuf scores for df containing gene names as column headings
+'''
     loeuf_score_list = []
     for i in df_for_loeuf.columns:
         if i in LOEUF_dict.keys():
@@ -74,13 +100,14 @@ def get_loeuf_score(df_for_loeuf):
         else:
             loeuf_score_list.append(1)
     return(loeuf_score_list)
-
+'''
+    
 # weight normalised scores by LOEUF
 def divide_df_by_loeuf(df):
     '''
     function to divide df rows by loeuf score for each gene
     '''
-    return df/get_loeuf_score(df)
+    return df/loeuf_score(df)
     
 genepy_norm_loeuf = divide_df_by_loeuf(genepy_normalized)
     
@@ -100,10 +127,3 @@ def get_diagnosis_df(df, diagnosis):
         return patient_phenotype.loc[:,'Diagnosis'] == diagnosis
     index_value = patient_phenotype.iloc[np.where(get_diagnosis(diagnosis))[0]].index
     return df.loc[index_value]
-
-# create subset df
-CD_subset = get_diagnosis_df(genepy_norm_loeuf, 'CD')
-UC_subset = get_diagnosis_df(genepy_norm_loeuf, 'UC')
-IBDU_subset = get_diagnosis_df(genepy_norm_loeuf, 'IBDU')
-NOT_IBD_subset = get_diagnosis_df(genepy_norm_loeuf, 'NOT_IBD')
-
